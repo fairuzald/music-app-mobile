@@ -2,11 +2,12 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {colors} from '../constants/color';
 import {fontFamilies} from '../constants/fonts';
-import {fonts} from '../constants/dimensions';
+import {fonts, spacing} from '../constants/dimensions';
 import PlayerControl from './PlayerControl';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSharedValue} from 'react-native-reanimated';
 import {Slider} from 'react-native-awesome-slider';
+import MovingText from './MovingText';
 
 const imageUrl =
   'https://ncsmusic.s3.eu-west-1.amazonaws.com/tracks/000/001/736/325x325/faster-1723161655-zwzjLFKZKK.jpg';
@@ -36,7 +37,11 @@ const FloatingPlayer = () => {
       <TouchableOpacity style={styles.container} activeOpacity={0.85}>
         <Image source={{uri: imageUrl}} style={styles.coverImage} />
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Track Name</Text>
+          <MovingText
+            text="Track Namd;la skdl;asdkla da;ldke"
+            style={styles.title}
+            animationThreshold={15}
+          />
           <Text style={styles.artist}>Artist Name</Text>
         </View>
         <PlayerControl />
@@ -66,7 +71,10 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flex: 1,
-    marginLeft: 10,
+    overflow: 'hidden',
+    paddingHorizontal: spacing.sm,
+    marginLeft: spacing.sm,
+    marginRight: spacing.lg,
   },
   artist: {
     color: colors.textSecondary,
