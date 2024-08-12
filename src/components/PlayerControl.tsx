@@ -3,12 +3,17 @@ import React from 'react';
 import {iconSizes} from '../constants/dimensions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors} from '../constants/color';
-const PlayerControl = () => {
+
+interface PlayerControlProps {
+  size?: number;
+}
+
+const PlayerControl = ({size = iconSizes.xl}: PlayerControlProps) => {
   return (
     <View style={styles.container}>
-      <PreviousButton size={iconSizes.lg} />
-      <PlayPauseButton />
-      <NextButton size={iconSizes.lg} />
+      <PreviousButton size={size} />
+      <PlayPauseButton size={size} />
+      <NextButton size={size} />
     </View>
   );
 };

@@ -3,6 +3,8 @@ const iconSizes = {
   md: 24,
   lg: 32,
   xl: 40,
+  '2xl': 48,
+  '3xl': 56,
 };
 
 const spacing = {
@@ -11,6 +13,9 @@ const spacing = {
   md: 16,
   lg: 24,
   xl: 32,
+  '2xl': 40,
+  '3xl': 48,
+  '4xl': 56,
 };
 
 const fonts = {

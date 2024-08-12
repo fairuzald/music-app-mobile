@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TextStyle, ViewStyle} from 'react-native';
+import {TextStyle, ViewStyle} from 'react-native';
 import React, {useEffect} from 'react';
 import Animated, {
   Easing,
@@ -62,5 +62,3 @@ const MovingText: React.FC<MovingTextProps> = ({
 };
 
 export default MovingText;
-
-const styles = StyleSheet.create({});

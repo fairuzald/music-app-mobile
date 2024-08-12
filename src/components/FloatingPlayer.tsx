@@ -8,14 +8,28 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSharedValue} from 'react-native-reanimated';
 import {Slider} from 'react-native-awesome-slider';
 import MovingText from './MovingText';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  Home: undefined;
+  Favorite: undefined;
+  Player: undefined;
+};
 
 const imageUrl =
   'https://ncsmusic.s3.eu-west-1.amazonaws.com/tracks/000/001/736/325x325/faster-1723161655-zwzjLFKZKK.jpg';
 
 const FloatingPlayer = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const progress = useSharedValue(50);
   const min = useSharedValue(0);
   const max = useSharedValue(100);
+  const handleOpenPlayer = () => {
+    navigation.navigate('Player'); // No TypeScript error now
+  };
+
   return (
     <View>
       <View style={{zIndex: 1}}>
@@ -34,7 +48,10 @@ const FloatingPlayer = () => {
           }}
         />
       </View>
-      <TouchableOpacity style={styles.container} activeOpacity={0.85}>
+      <TouchableOpacity
+        style={styles.container}
+        activeOpacity={0.85}
+        onPress={handleOpenPlayer}>
         <Image source={{uri: imageUrl}} style={styles.coverImage} />
         <View style={styles.titleContainer}>
           <MovingText
