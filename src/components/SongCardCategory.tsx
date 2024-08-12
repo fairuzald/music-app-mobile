@@ -17,7 +17,6 @@ interface SongCardCategoryProps {
 
 const SongCardCategory = ({item}: SongCardCategoryProps) => {
   const handlePlayTrac = async (selectedTrack: SongProps) => {
-    // make a queue
     const trackIndex = item.songs.findIndex(
       track => track.id === selectedTrack.id,
     );
@@ -34,8 +33,10 @@ const SongCardCategory = ({item}: SongCardCategoryProps) => {
 
     await TrackPlayer.reset();
     await TrackPlayer.add(queue);
+    await TrackPlayer.skip(trackIndex);
     await TrackPlayer.play();
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.headingText}>{item.category}</Text>

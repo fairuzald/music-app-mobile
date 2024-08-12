@@ -11,6 +11,8 @@ import React from 'react';
 import {colors} from '../constants/color';
 import {fontFamilies} from '../constants/fonts';
 import {fonts, spacing} from '../constants/dimensions';
+import {useNavigation} from '@react-navigation/native';
+import {NavigationProp} from '../types/navigator';
 
 export interface SongProps {
   id: string;
@@ -22,7 +24,7 @@ export interface SongProps {
 interface SongCardProps {
   containerStyle?: TextStyle | ViewStyle; // Accepts both TextStyle and ViewStyle
   imageStyle?: ImageStyle; // Accepts both TextStyle and ViewStyle
-  item: SongProps;
+  item?: SongProps;
   handlePlay: (item: SongProps) => void;
 }
 
@@ -32,10 +34,15 @@ const SongCard = ({
   imageStyle,
   handlePlay,
 }: SongCardProps) => {
+  const navigation = useNavigation<NavigationProp>();
+  if (!item) return null;
   return (
     <TouchableOpacity
       style={[styles.container, containerStyle]}
-      onPress={() => handlePlay(item)}>
+      onPress={() => {
+        handlePlay(item);
+        navigation.navigate('Player');
+      }}>
       <Image
         source={{uri: item.artwork}}
         style={[styles.coverImage, imageStyle]}

@@ -21,9 +21,9 @@ const PlayerControl = ({size = iconSizes.xl}: PlayerControlProps) => {
 };
 
 export const PreviousButton = ({size = iconSizes.xl}) => {
-  const handlePress = (e: GestureResponderEvent) => {
+  const handlePress = async (e: GestureResponderEvent) => {
     e.stopPropagation(); // Prevent event propagation
-    // Add any additional logic for the button here
+    await TrackPlayer.skipToPrevious();
   };
 
   return (
@@ -42,7 +42,6 @@ export const PlayPauseButton = ({size = iconSizes.xl}) => {
   const isPlaying = playerState.state === State.Playing;
 
   const handlePlayPause = async (e: GestureResponderEvent) => {
-    e.preventDefault(); // Prevent event propagation
     e.stopPropagation(); // Prevent event propagation
     if (isPlaying) {
       await TrackPlayer.pause();
@@ -70,9 +69,9 @@ export const PlayPauseButton = ({size = iconSizes.xl}) => {
 };
 
 export const NextButton = ({size = iconSizes.xl}) => {
-  const handlePress = (e: GestureResponderEvent) => {
+  const handlePress = async (e: GestureResponderEvent) => {
     e.stopPropagation(); // Prevent event propagation
-    // Add any additional logic for the button here
+    await TrackPlayer.skipToNext();
   };
 
   return (

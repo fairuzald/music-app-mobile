@@ -8,26 +8,20 @@ import {useSharedValue} from 'react-native-reanimated';
 import {Slider} from 'react-native-awesome-slider';
 import MovingText from './MovingText';
 import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import TrackPlayer, {useProgress} from 'react-native-track-player';
-
-type RootStackParamList = {
-  Home: undefined;
-  Favorite: undefined;
-  Player: undefined;
-};
-
-const imageUrl =
-  'https://ncsmusic.s3.eu-west-1.amazonaws.com/tracks/000/001/736/325x325/faster-1723161655-zwzjLFKZKK.jpg';
+import TrackPlayer, {
+  useActiveTrack,
+  useProgress,
+} from 'react-native-track-player';
+import {NavigationProp} from '../types/navigator';
 
 const FloatingPlayer = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp>();
   const progresss = useSharedValue(0);
   const min = useSharedValue(0);
   const max = useSharedValue(1);
   const isSliding = useSharedValue(false);
   const {position, duration} = useProgress();
+  const curSong = useActiveTrack();
 
   useEffect(() => {
     if (duration > 0) {
@@ -37,6 +31,10 @@ const FloatingPlayer = () => {
   const handleOpenPlayer = () => {
     navigation.navigate('Player');
   };
+
+  if (!curSong) {
+    return null;
+  }
 
   return (
     <View>
@@ -72,14 +70,14 @@ const FloatingPlayer = () => {
         style={styles.container}
         activeOpacity={0.85}
         onPress={handleOpenPlayer}>
-        <Image source={{uri: imageUrl}} style={styles.coverImage} />
+        <Image source={{uri: curSong.artwork}} style={styles.coverImage} />
         <View style={styles.titleContainer}>
           <MovingText
-            text="Track Name"
+            text={curSong?.title || ''}
             style={styles.title}
             animationThreshold={15}
           />
-          <Text style={styles.artist}>Artist Name</Text>
+          <Text style={styles.artist}>{curSong.artist}</Text>
         </View>
         <PlayerControl />
       </TouchableOpacity>
