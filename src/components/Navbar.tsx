@@ -13,51 +13,51 @@ import type {CustomTheme} from '../types/themes';
 import {useTheme} from '@react-navigation/native';
 import useThemeStore from '../store/themeStore';
 
-const CloseIcon = ({color}: {color: string}) => (
-  <AntDesign name="close" color={color} size={iconSizes.lg} />
+const Icon = ({
+  name,
+  type: IconComponent,
+  size,
+  isPrimary,
+}: {
+  name: string;
+  type: React.ComponentType<any>;
+  size: number;
+  isPrimary?: boolean;
+}) => {
+  const {colors} = useTheme() as CustomTheme;
+
+  return (
+    <IconComponent
+      name={name}
+      color={isPrimary ? colors.iconPrimary : colors.iconSecondary}
+      size={size}
+    />
+  );
+};
+
+// Icon components for reusability and clarity
+const CloseIcon = () => (
+  <Icon name="close" type={AntDesign} size={iconSizes.lg} isPrimary />
 );
 
-const ToggleDarkModeIcon = ({
-  isDarkMode,
-  color,
-}: {
-  isDarkMode: boolean;
-  color: string;
-}) => (
-  <Octicons
-    name={isDarkMode ? 'sun' : 'moon'}
-    color={color}
+const ToggleDarkModeIcon = ({isDarkMode}: {isDarkMode: boolean}) => (
+  <Icon
+    name={isDarkMode ? 'moon' : 'sun'}
+    type={Octicons}
     size={iconSizes.lg}
+    isPrimary
   />
 );
 
-const HomeIcon = ({color}: {color: string}) => (
-  <AntDesign name="home" color={color} size={iconSizes.md} />
+const HomeIcon = () => (
+  <Icon name="home" type={AntDesign} size={iconSizes.md} />
 );
 
-// const ProfileIcon = ({color}: {color: string}) => (
-//   <AntDesign name="user" color={color} size={iconSizes.md} />
-// );
-
-const FavoriteIcon = ({color}: {color: string}) => (
-  <AntDesign name="hearto" color={color} size={iconSizes.md} />
+const FavoriteIcon = () => (
+  <Icon name="hearto" type={AntDesign} size={iconSizes.md} />
 );
 
-// const LanguageIcon = ({color}: {color: string}) => (
-//   <AntDesign name="earth" color={color} size={iconSizes.md} />
-// );
-// const ContactIcon = ({color}: {color: string}) => (
-//   <AntDesign name="contacts" color={color} size={iconSizes.md} />
-// );
-
-// const FAQIcon = ({color}: {color: string}) => (
-//   <AntDesign name="questioncircleo" color={color} size={iconSizes.md} />
-// );
-
-// const SettingsIcon = ({color}: {color: string}) => (
-//   <AntDesign name="setting" color={color} size={iconSizes.md} />
-// );
-
+// Main Navbar component
 const Navbar: React.FC<DrawerContentComponentProps> = props => {
   const {colors} = useTheme() as CustomTheme;
   const {isDarkMode, toggleDarkMode} = useThemeStore();
@@ -65,63 +65,30 @@ const Navbar: React.FC<DrawerContentComponentProps> = props => {
   return (
     <DrawerContentScrollView
       style={[styles.container, {backgroundColor: colors.background}]}>
+      {/* Header with Close and Dark Mode toggle buttons */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.closeDrawer()}>
-          <CloseIcon color={colors.iconPrimary} />
+          <CloseIcon />
         </TouchableOpacity>
         <TouchableOpacity onPress={toggleDarkMode}>
-          <ToggleDarkModeIcon
-            isDarkMode={!!isDarkMode}
-            color={colors.iconPrimary}
-          />
+          <ToggleDarkModeIcon isDarkMode={isDarkMode} />
         </TouchableOpacity>
       </View>
 
-      {/* Menu items */}
+      {/* Drawer items */}
       <View style={styles.drawerItem}>
         <DrawerItem
           label="Home"
           onPress={() => props.navigation.navigate('Home')}
           labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
-          icon={() => <HomeIcon color={colors.iconSecondary} />}
+          icon={HomeIcon}
         />
-        {/* <DrawerItem
-          label="Profile"
-          onPress={() => props.navigation.navigate('Profile')}
-          labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
-          icon={() => <ProfileIcon color={colors.iconSecondary} />}
-        /> */}
         <DrawerItem
           label="Favorited Songs"
           onPress={() => props.navigation.navigate('Favorite')}
           labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
-          icon={() => <FavoriteIcon color={colors.iconSecondary} />}
+          icon={FavoriteIcon}
         />
-        {/* <DrawerItem
-          label="Language"
-          onPress={() => props.navigation.navigate('Language')}
-          labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
-          icon={() => <LanguageIcon color={colors.iconSecondary} />}
-        />
-        <DrawerItem
-          label="Contact"
-          onPress={() => props.navigation.navigate('Contact')}
-          labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
-          icon={() => <ContactIcon color={colors.iconSecondary} />}
-        />
-        <DrawerItem
-          label="FAQ"
-          onPress={() => props.navigation.navigate('FAQ')}
-          labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
-          icon={() => <FAQIcon color={colors.iconSecondary} />}
-        />
-
-        <DrawerItem
-          label="Settings"
-          onPress={() => props.navigation.navigate('Settings')}
-          labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
-          icon={() => <SettingsIcon color={colors.iconSecondary} />}
-        /> */}
       </View>
     </DrawerContentScrollView>
   );
@@ -129,6 +96,7 @@ const Navbar: React.FC<DrawerContentComponentProps> = props => {
 
 export default Navbar;
 
+// Styles for the Navbar component
 const styles = StyleSheet.create({
   container: {
     flex: 1,

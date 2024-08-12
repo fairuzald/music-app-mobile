@@ -1,27 +1,25 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {iconSizes, spacing} from '../constants/dimensions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {iconSizes, spacing} from '../constants/dimensions';
 import {useNavigation, useTheme} from '@react-navigation/native';
-import {DrawerNavigationProp} from '@react-navigation/drawer';
 import type {CustomTheme} from '../types/themes';
-
-type RootDrawerParamList = {
-  DrawerHome: undefined;
-};
+import {DrawerNavigationProps} from '../types/navigator';
 
 const Header = () => {
+  // Accessing the current theme colors and navigation functions
   const {colors} = useTheme() as CustomTheme;
-  const navigation = useNavigation<DrawerNavigationProp<RootDrawerParamList>>();
+  const navigation = useNavigation<DrawerNavigationProps>();
 
+  // Function to toggle the drawer menu
   const toggleDrawer = () => {
     navigation.toggleDrawer();
   };
 
   return (
     <View style={styles.header}>
+      {/* Drawer toggle button */}
       <TouchableOpacity onPress={toggleDrawer}>
         <FontAwesome5
           name="grip-lines"
@@ -29,6 +27,8 @@ const Header = () => {
           size={iconSizes.md}
         />
       </TouchableOpacity>
+
+      {/* Search button */}
       <TouchableOpacity>
         <AntDesign
           name="search1"

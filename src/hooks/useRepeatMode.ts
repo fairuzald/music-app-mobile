@@ -6,7 +6,7 @@ export const useRepeatMode = () => {
 
   const changeRepeatMode = useCallback(async (repeat: RepeatMode) => {
     await TrackPlayer.setRepeatMode(repeat);
-    setRepeatMode(repeat); // Update the state after changing the repeat mode
+    setRepeatMode(repeat);
   }, []);
 
   useEffect(() => {

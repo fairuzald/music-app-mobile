@@ -12,7 +12,7 @@ import Animated, {
 interface MovingTextProps {
   text: string;
   animationThreshold: number;
-  style?: TextStyle | ViewStyle | TextStyle[] | ViewStyle[]; // Accepts both TextStyle and ViewStyle
+  style?: TextStyle | ViewStyle | TextStyle[] | ViewStyle[];
 }
 
 const MovingText: React.FC<MovingTextProps> = ({
@@ -20,12 +20,22 @@ const MovingText: React.FC<MovingTextProps> = ({
   animationThreshold,
   style,
 }) => {
+  // Shared value for horizontal translation (X-axis)
   const translateX = useSharedValue(0);
+
+  // Determine if animation should be triggered based on text length
   const shouldAnimate = text.length > animationThreshold;
+
+  // Calculate the width of the text based on its length (used for animation)
   const textWidth = text.length * 3;
 
   useEffect(() => {
-    if (!shouldAnimate) return;
+    // If animation is not required, return early
+    if (!shouldAnimate) {
+      return;
+    }
+
+    // Start the animation with a delay, repeat it indefinitely, and alternate directions
     translateX.value = withDelay(
       1000,
       withRepeat(
@@ -39,11 +49,10 @@ const MovingText: React.FC<MovingTextProps> = ({
     );
   }, [shouldAnimate, textWidth, translateX]);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{translateX: translateX.value}],
-    };
-  });
+  // Define the animated style for the text
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{translateX: translateX.value}],
+  }));
 
   return (
     <Animated.Text
@@ -51,6 +60,7 @@ const MovingText: React.FC<MovingTextProps> = ({
       style={[
         animatedStyle,
         style,
+        // eslint-disable-next-line react-native/no-inline-styles
         shouldAnimate && {
           width: 9999,
           paddingLeft: 16,

@@ -1,3 +1,4 @@
+import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type RootStackParamList = {
@@ -7,4 +8,11 @@ type RootStackParamList = {
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-export type {RootStackParamList, NavigationProp};
+
+type RootDrawerParamList = {
+  DrawerHome: undefined;
+};
+
+type DrawerNavigationProps = DrawerNavigationProp<RootDrawerParamList>;
+
+export type {RootStackParamList, NavigationProp, DrawerNavigationProps};

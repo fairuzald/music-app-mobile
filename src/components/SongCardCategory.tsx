@@ -7,7 +7,8 @@ import SongCard, {SongProps} from './SongCard';
 import TrackPlayer from 'react-native-track-player';
 import type {CustomTheme} from '../types/themes';
 
-const ItemSeparator = () => <View style={{marginHorizontal: spacing.sm}} />;
+// Separator component for FlatList
+const ItemSeparator = () => <View style={styles.itemSeparator} />;
 
 export interface ItemDataSongProps {
   category: string;
@@ -18,9 +19,11 @@ interface SongCardCategoryProps {
   item: ItemDataSongProps;
 }
 
+// Component to render a category of songs with a list of SongCard components
 const SongCardCategory: React.FC<SongCardCategoryProps> = ({item: song}) => {
   const {colors} = useTheme() as CustomTheme;
 
+  // Function to handle track playing
   const handlePlayTrack = async (selectedTrack: SongProps) => {
     const trackIndex = song.songs.findIndex(
       track => track.id === selectedTrack.id,
@@ -30,9 +33,11 @@ const SongCardCategory: React.FC<SongCardCategoryProps> = ({item: song}) => {
       return;
     }
 
-    const beforeTrack = song.songs.slice(0, trackIndex);
-    const afterTrack = song.songs.slice(trackIndex + 1);
-    const queue = [...beforeTrack, selectedTrack, ...afterTrack];
+    const queue = [
+      ...song.songs.slice(0, trackIndex),
+      selectedTrack,
+      ...song.songs.slice(trackIndex + 1),
+    ];
 
     await TrackPlayer.reset();
     await TrackPlayer.add(queue);
@@ -51,9 +56,7 @@ const SongCardCategory: React.FC<SongCardCategoryProps> = ({item: song}) => {
         renderItem={({item}) => (
           <SongCard item={item} handlePlay={handlePlayTrack} />
         )}
-        contentContainerStyle={{
-          paddingHorizontal: spacing.lg,
-        }}
+        contentContainerStyle={styles.flatListContainer}
         ItemSeparatorComponent={ItemSeparator}
       />
     </View>
@@ -62,6 +65,7 @@ const SongCardCategory: React.FC<SongCardCategoryProps> = ({item: song}) => {
 
 export default SongCardCategory;
 
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -70,5 +74,11 @@ const styles = StyleSheet.create({
     fontSize: fonts.xl,
     fontFamily: fontFamilies.bold,
     paddingVertical: spacing.lg,
+  },
+  itemSeparator: {
+    marginHorizontal: spacing.sm,
+  },
+  flatListContainer: {
+    paddingHorizontal: spacing.lg,
   },
 });

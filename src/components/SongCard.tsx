@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Image,
   ImageStyle,
@@ -7,10 +8,9 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import React from 'react';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {fontFamilies} from '../constants/fonts';
 import {fonts, spacing} from '../constants/dimensions';
-import {useNavigation, useTheme} from '@react-navigation/native';
 import {NavigationProp} from '../types/navigator';
 import type {CustomTheme} from '../types/themes';
 
@@ -21,31 +21,33 @@ export interface SongProps {
   title: string;
   artwork: string;
 }
+
 interface SongCardProps {
-  containerStyle?: TextStyle | ViewStyle; // Accepts both TextStyle and ViewStyle
-  imageStyle?: ImageStyle; // Accepts both TextStyle and ViewStyle
+  containerStyle?: TextStyle | ViewStyle;
+  imageStyle?: ImageStyle;
   item?: SongProps;
   handlePlay: (item: SongProps) => void;
 }
 
-const SongCard = ({
+const SongCard: React.FC<SongCardProps> = ({
   item,
   containerStyle,
   imageStyle,
   handlePlay,
-}: SongCardProps) => {
+}) => {
   const {colors} = useTheme() as CustomTheme;
   const navigation = useNavigation<NavigationProp>();
+
+  // If there's no item provided, render nothing
   if (!item) {
     return null;
   }
-
   return (
     <TouchableOpacity
-      style={[styles.container, containerStyle]}
+      style={[styles.container, containerStyle]} // Merging custom container styles
       onPress={() => {
-        handlePlay(item);
-        navigation.navigate('Player');
+        handlePlay(item); // Play the selected song
+        navigation.navigate('Player'); // Navigate to the Player screen
       }}>
       <Image
         source={{uri: item.artwork}}

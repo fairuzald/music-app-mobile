@@ -15,44 +15,52 @@ import {NavigationProp} from '../types/navigator';
 import type {CustomTheme} from '../types/themes';
 
 const FloatingPlayer = () => {
+  // Theme and navigation hooks
   const {colors} = useTheme() as CustomTheme;
   const navigation = useNavigation<NavigationProp>();
-  const progresss = useSharedValue(0);
-  const min = useSharedValue(0);
-  const max = useSharedValue(1);
-  const isSliding = useSharedValue(false);
-  const {position, duration} = useProgress();
-  const curSong = useActiveTrack();
 
+  // Shared values for slider and progress tracking
+  const progressValue = useSharedValue(0);
+  const minValue = useSharedValue(0);
+  const maxValue = useSharedValue(1);
+  const isSliding = useSharedValue(false);
+
+  // Track the position and duration of the current song
+  const {position, duration} = useProgress();
+  const currentTrack = useActiveTrack();
+
+  // Update progress value when the position or duration changes
   useEffect(() => {
     if (duration > 0) {
-      progresss.value = position / duration;
+      progressValue.value = position / duration;
     }
-  }, [position, duration, progresss]);
+  }, [position, duration, progressValue]);
+
+  // Handle opening the full player view
   const handleOpenPlayer = () => {
     navigation.navigate('Player');
   };
 
-  if (!curSong) {
+  // Return null if there is no active track
+  if (!currentTrack) {
     return null;
   }
 
   return (
     <View>
-      <View style={{zIndex: 1}}>
+      {/* Slider of current song */}
+      <View style={styles.sliderContainer}>
         <Slider
-          progress={progresss}
-          minimumValue={min}
-          maximumValue={max}
+          progress={progressValue}
+          minimumValue={minValue}
+          maximumValue={maxValue}
           style={styles.container}
           theme={{
             minimumTrackTintColor: colors.minimumTinkColor,
             maximumTrackTintColor: colors.maximumTrackColor,
           }}
           renderBubble={() => <View />}
-          containerStyle={{
-            height: 8,
-          }}
+          containerStyle={styles.sliderStyle}
           onSlidingStart={() => {
             isSliding.value = true;
           }}
@@ -67,19 +75,26 @@ const FloatingPlayer = () => {
           }}
         />
       </View>
+
+      {/* Control and information */}
       <TouchableOpacity
         style={styles.container}
         activeOpacity={0.85}
         onPress={handleOpenPlayer}>
-        <Image source={{uri: curSong.artwork}} style={styles.coverImage} />
+        {/* Album image */}
+        <Image source={{uri: currentTrack.artwork}} style={styles.coverImage} />
+
+        {/* Content Text */}
         <View style={styles.titleContainer}>
+          {/* Title */}
           <MovingText
-            text={curSong?.title || ''}
+            text={currentTrack.title || ''}
             style={[styles.title, {color: colors.textPrimary}]}
             animationThreshold={15}
           />
+          {/* Artist Name */}
           <Text style={[styles.artist, {color: colors.textSecondary}]}>
-            {curSong.artist}
+            {currentTrack.artist}
           </Text>
         </View>
         <PlayerControl />
@@ -116,5 +131,11 @@ const styles = StyleSheet.create({
   artist: {
     fontFamily: fontFamilies.regular,
     fontSize: fonts.md,
+  },
+  sliderContainer: {
+    zIndex: 1,
+  },
+  sliderStyle: {
+    height: 8,
   },
 });
