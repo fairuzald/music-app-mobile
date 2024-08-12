@@ -14,7 +14,7 @@ const SongCardCategory = () => {
       <FlatList
         data={[1, 2, 3, 4, 5]}
         horizontal
-        renderItem={SongCard}
+        renderItem={() => <SongCard />}
         contentContainerStyle={{
           paddingHorizontal: spacing.lg,
         }}
