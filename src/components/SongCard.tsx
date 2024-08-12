@@ -8,11 +8,11 @@ import {
   ViewStyle,
 } from 'react-native';
 import React from 'react';
-import {colors} from '../constants/color';
 import {fontFamilies} from '../constants/fonts';
 import {fonts, spacing} from '../constants/dimensions';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {NavigationProp} from '../types/navigator';
+import type {CustomTheme} from '../types/themes';
 
 export interface SongProps {
   id: string;
@@ -34,8 +34,12 @@ const SongCard = ({
   imageStyle,
   handlePlay,
 }: SongCardProps) => {
+  const {colors} = useTheme() as CustomTheme;
   const navigation = useNavigation<NavigationProp>();
-  if (!item) return null;
+  if (!item) {
+    return null;
+  }
+
   return (
     <TouchableOpacity
       style={[styles.container, containerStyle]}
@@ -47,10 +51,14 @@ const SongCard = ({
         source={{uri: item.artwork}}
         style={[styles.coverImage, imageStyle]}
       />
-      <Text style={styles.title} numberOfLines={1}>
+      <Text
+        style={[styles.title, {color: colors.textPrimary}]}
+        numberOfLines={1}>
         {item.title}
       </Text>
-      <Text style={styles.artist}>{item.artist}</Text>
+      <Text style={[styles.artist, {color: colors.textSecondary}]}>
+        {item.artist}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -68,14 +76,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    color: colors.textPrimary,
     textAlign: 'center',
     fontFamily: fontFamilies.medium,
     fontSize: fonts.lg,
     paddingVertical: spacing.sm,
   },
   artist: {
-    color: colors.textSecondary,
     textAlign: 'center',
     fontFamily: fontFamilies.regular,
     fontSize: fonts.md,

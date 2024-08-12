@@ -38,9 +38,8 @@ export const useSetupTrackPlayer = ({onLoad}: {onLoad: () => void}) => {
         isInitalized.current = true;
         onLoad();
       })
-      .catch(err => {
+      .catch(() => {
         isInitalized.current = false;
-        console.error(err);
       });
   }, [onLoad]);
 };

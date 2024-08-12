@@ -1,6 +1,5 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {colors} from '../constants/color';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {fonts, iconSizes, spacing} from '../constants/dimensions';
 import {fontFamilies} from '../constants/fonts';
@@ -10,8 +9,9 @@ import PlayerShuffleToggle from '../components/PlayerShuffleToggle';
 import PlayerProggressBar from '../components/PlayerProggressBar';
 import PlayerControl from '../components/PlayerControl';
 import TrackPlayer, {useActiveTrack} from 'react-native-track-player';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import useFavoriteStore from '../store/favoritedStore';
+import type {CustomTheme} from '../types/themes';
 
 const PlayerScreen = () => {
   const curSong = useActiveTrack();
@@ -19,6 +19,7 @@ const PlayerScreen = () => {
   const [isMute, setIsMute] = useState(false);
   const {favorited, toggleFavorite} = useFavoriteStore();
   const isFavorite = favorited.includes(curSong?.id || '');
+  const {colors} = useTheme() as CustomTheme;
 
   useEffect(() => {
     const fetchVolume = async () => {
@@ -53,7 +54,7 @@ const PlayerScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
           onPress={() => {
@@ -65,14 +66,26 @@ const PlayerScreen = () => {
             color={colors.iconPrimary}
           />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Now Playing</Text>
+        <Text
+          style={[
+            styles.headerText,
+            {
+              color: colors.textPrimary,
+            },
+          ]}>
+          Now Playing
+        </Text>
       </View>
 
       <Image source={{uri: curSong?.artwork}} style={styles.coverImage} />
       <View style={styles.contentContainer}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{curSong?.title}</Text>
-          <Text style={styles.artist}>{curSong?.artist}</Text>
+          <Text style={[styles.title, {color: colors.textPrimary}]}>
+            {curSong?.title}
+          </Text>
+          <Text style={[styles.artist, {color: colors.textSecondary}]}>
+            {curSong?.artist}
+          </Text>
         </View>
         <TouchableOpacity onPress={handleFavorite}>
           <AntDesign
@@ -113,7 +126,6 @@ export default PlayerScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     paddingHorizontal: spacing.lg,
   },
   headerContainer: {
@@ -123,7 +135,6 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
   },
   headerText: {
-    color: colors.textPrimary,
     fontFamily: fontFamilies.medium,
     fontSize: fonts.lg,
     flex: 1,
@@ -137,13 +148,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
   },
   title: {
-    color: colors.textPrimary,
     fontFamily: fontFamilies.medium,
     fontSize: fonts.lg,
     textAlign: 'center',
   },
   artist: {
-    color: colors.textSecondary,
     fontFamily: fontFamilies.regular,
     fontSize: fonts.md,
     textAlign: 'center',

@@ -1,6 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
-import {colors} from '../constants/color';
 import {fontFamilies} from '../constants/fonts';
 import {fonts, spacing} from '../constants/dimensions';
 import {Slider} from 'react-native-awesome-slider';
@@ -10,8 +9,13 @@ import TrackPlayer, {
   useProgress,
 } from 'react-native-track-player';
 import {minutesConverter} from '../utils/minutesConverter';
+import type {CustomTheme} from '../types/themes';
+
+import {useTheme} from '@react-navigation/native';
 
 const PlayerProggressBar = () => {
+  const {colors} = useTheme() as CustomTheme;
+
   const progress = useSharedValue(0);
   const min = useSharedValue(0);
   const max = useSharedValue(1);
@@ -34,8 +38,12 @@ const PlayerProggressBar = () => {
   return (
     <View style={styles.container}>
       <View style={styles.timeContainer}>
-        <Text style={styles.timeText}>{positionString}</Text>
-        <Text style={styles.timeText}>{durationString}</Text>
+        <Text style={[styles.timeText, {color: colors.textPrimary}]}>
+          {positionString}
+        </Text>
+        <Text style={[styles.timeText, {color: colors.textPrimary}]}>
+          {durationString}
+        </Text>
       </View>
       <Slider
         progress={progress}
@@ -78,7 +86,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   timeText: {
-    color: colors.textPrimary,
     fontFamily: fontFamilies.regular,
     fontSize: fonts.sm,
     opacity: 0.75,

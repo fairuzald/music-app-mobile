@@ -1,21 +1,22 @@
 import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
-import {colors} from '../constants/color';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {fonts, iconSizes, spacing} from '../constants/dimensions';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {fontFamilies} from '../constants/fonts';
 import SongCard, {SongProps} from '../components/SongCard';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import useFavoriteStore from '../store/favoritedStore';
 import {allSongs} from '../data/songs';
 import TrackPlayer from 'react-native-track-player';
 import FloatingPlayer from '../components/FloatingPlayer';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigator';
+import type {CustomTheme} from '../types/themes';
 
 const FavoriteScreen = () => {
+  const {colors} = useTheme() as CustomTheme;
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {favorited} = useFavoriteStore();
@@ -68,14 +69,25 @@ const FavoriteScreen = () => {
         <View
           style={{
             flex: 1,
-            textAlign: 'center',
-            textAlignVertical: 'center',
             paddingHorizontal: spacing.lg,
           }}>
-          <Text style={styles.headingText}>Favorited Songs</Text>
           <Text
             style={[
               styles.headingText,
+              {
+                color: colors.textPrimary,
+              },
+            ]}>
+            Favorited Songs
+          </Text>
+          <Text
+            style={[
+              [
+                styles.headingText,
+                {
+                  color: colors.textPrimary,
+                },
+              ],
               {textAlign: 'center', marginTop: spacing.lg, alignSelf: 'center'},
             ]}>
             No favorite songs yet
@@ -85,7 +97,15 @@ const FavoriteScreen = () => {
         <FlatList
           data={favoriteSongs}
           ListHeaderComponent={() => (
-            <Text style={styles.headingText}>Favorited Songs</Text>
+            <Text
+              style={[
+                styles.headingText,
+                {
+                  color: colors.textPrimary,
+                },
+              ]}>
+              Favorited Songs
+            </Text>
           )}
           renderItem={({item}) => (
             <SongCard
@@ -123,7 +143,6 @@ export default FavoriteScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -134,7 +153,6 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontSize: fonts.xl,
-    color: colors.textPrimary,
     fontFamily: fontFamilies.bold,
   },
 });

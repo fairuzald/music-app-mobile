@@ -1,16 +1,28 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {colors} from '../constants/color';
 import Header from '../components/Header';
-import SongCardCategory from '../components/SongCardCategory';
+import SongCardCategory, {
+  ItemDataSongProps,
+} from '../components/SongCardCategory';
 import FloatingPlayer from '../components/FloatingPlayer';
 import {songs} from '../data/songs';
+import {useTheme} from '@react-navigation/native';
 
 const HomeScreen: React.FC = () => {
+  const {colors} = useTheme();
+
+  const renderSongCategory = ({item}: {item: ItemDataSongProps}) => (
+    <SongCardCategory item={item} />
+  );
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
       <Header />
-      <FlatList data={songs} renderItem={SongCardCategory} />
+      <FlatList
+        data={songs}
+        renderItem={renderSongCategory}
+        keyExtractor={item => item.category}
+      />
       <FloatingPlayer />
     </View>
   );
@@ -20,7 +32,6 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     flex: 1,
   },
 });

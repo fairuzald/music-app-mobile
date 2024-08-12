@@ -1,20 +1,21 @@
 import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useEffect} from 'react';
-import {colors} from '../constants/color';
 import {fontFamilies} from '../constants/fonts';
 import {fonts, spacing} from '../constants/dimensions';
 import PlayerControl from './PlayerControl';
 import {useSharedValue} from 'react-native-reanimated';
 import {Slider} from 'react-native-awesome-slider';
 import MovingText from './MovingText';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import TrackPlayer, {
   useActiveTrack,
   useProgress,
 } from 'react-native-track-player';
 import {NavigationProp} from '../types/navigator';
+import type {CustomTheme} from '../types/themes';
 
 const FloatingPlayer = () => {
+  const {colors} = useTheme() as CustomTheme;
   const navigation = useNavigation<NavigationProp>();
   const progresss = useSharedValue(0);
   const min = useSharedValue(0);
@@ -74,10 +75,12 @@ const FloatingPlayer = () => {
         <View style={styles.titleContainer}>
           <MovingText
             text={curSong?.title || ''}
-            style={styles.title}
+            style={[styles.title, {color: colors.textPrimary}]}
             animationThreshold={15}
           />
-          <Text style={styles.artist}>{curSong.artist}</Text>
+          <Text style={[styles.artist, {color: colors.textSecondary}]}>
+            {curSong.artist}
+          </Text>
         </View>
         <PlayerControl />
       </TouchableOpacity>
@@ -95,7 +98,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   title: {
-    color: colors.textPrimary,
     fontFamily: fontFamilies.medium,
     fontSize: fonts.lg,
   },
@@ -112,7 +114,6 @@ const styles = StyleSheet.create({
     marginRight: spacing.lg,
   },
   artist: {
-    color: colors.textSecondary,
     fontFamily: fontFamilies.regular,
     fontSize: fonts.md,
   },

@@ -1,23 +1,28 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {colors} from '../constants/color';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {useTheme} from '@react-navigation/native';
 import {fonts, spacing} from '../constants/dimensions';
 import {fontFamilies} from '../constants/fonts';
 import SongCard, {SongProps} from './SongCard';
 import TrackPlayer from 'react-native-track-player';
+import type {CustomTheme} from '../types/themes';
 
 const ItemSeparator = () => <View style={{marginHorizontal: spacing.sm}} />;
 
-interface SongCardCategoryProps {
-  item: {
-    category: string;
-    songs: Array<SongProps>;
-  };
+export interface ItemDataSongProps {
+  category: string;
+  songs: Array<SongProps>;
 }
 
-const SongCardCategory = ({item}: SongCardCategoryProps) => {
-  const handlePlayTrac = async (selectedTrack: SongProps) => {
-    const trackIndex = item.songs.findIndex(
+interface SongCardCategoryProps {
+  item: ItemDataSongProps;
+}
+
+const SongCardCategory: React.FC<SongCardCategoryProps> = ({item: song}) => {
+  const {colors} = useTheme() as CustomTheme;
+
+  const handlePlayTrack = async (selectedTrack: SongProps) => {
+    const trackIndex = song.songs.findIndex(
       track => track.id === selectedTrack.id,
     );
 
@@ -25,10 +30,8 @@ const SongCardCategory = ({item}: SongCardCategoryProps) => {
       return;
     }
 
-    const beforeTrack = item.songs.slice(0, trackIndex);
-
-    const afterTrack = item.songs.slice(trackIndex + 1);
-
+    const beforeTrack = song.songs.slice(0, trackIndex);
+    const afterTrack = song.songs.slice(trackIndex + 1);
     const queue = [...beforeTrack, selectedTrack, ...afterTrack];
 
     await TrackPlayer.reset();
@@ -39,17 +42,14 @@ const SongCardCategory = ({item}: SongCardCategoryProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headingText}>{item.category}</Text>
+      <Text style={[styles.headingText, {color: colors.textPrimary}]}>
+        {song.category}
+      </Text>
       <FlatList
-        data={item.songs}
+        data={song.songs}
         horizontal
         renderItem={({item}) => (
-          <SongCard
-            item={item}
-            handlePlay={(selectedTrack: SongProps) => {
-              handlePlayTrac(selectedTrack);
-            }}
-          />
+          <SongCard item={item} handlePlay={handlePlayTrack} />
         )}
         contentContainerStyle={{
           paddingHorizontal: spacing.lg,
@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontSize: fonts.xl,
-    color: colors.textPrimary,
     fontFamily: fontFamilies.bold,
     paddingVertical: spacing.lg,
   },

@@ -2,10 +2,12 @@ import {TouchableOpacity} from 'react-native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {iconSizes} from '../constants/dimensions';
-import {colors} from '../constants/color';
 import TrackPlayer from 'react-native-track-player';
+import {useTheme} from '@react-navigation/native';
+import type {CustomTheme} from '../types/themes';
 
 const PlayerShuffleToggle = () => {
+  const {colors} = useTheme() as CustomTheme;
   const handleShuffle = async () => {
     let queue = await TrackPlayer.getQueue();
 

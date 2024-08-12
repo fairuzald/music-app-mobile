@@ -1,17 +1,19 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {colors} from '../constants/color';
+
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {iconSizes, spacing} from '../constants/dimensions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
+import type {CustomTheme} from '../types/themes';
 
 type RootDrawerParamList = {
   DrawerHome: undefined;
 };
 
 const Header = () => {
+  const {colors} = useTheme() as CustomTheme;
   const navigation = useNavigation<DrawerNavigationProp<RootDrawerParamList>>();
 
   const toggleDrawer = () => {

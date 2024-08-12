@@ -2,9 +2,11 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {iconSizes} from '../constants/dimensions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {colors} from '../constants/color';
 import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
-import {GestureResponderEvent} from 'react-native'; // Import GestureResponderEvent
+import {GestureResponderEvent} from 'react-native';
+
+import type {CustomTheme} from '../types/themes';
+import {useTheme} from '@react-navigation/native';
 
 interface PlayerControlProps {
   size?: number;
@@ -21,6 +23,8 @@ const PlayerControl = ({size = iconSizes.xl}: PlayerControlProps) => {
 };
 
 export const PreviousButton = ({size = iconSizes.xl}) => {
+  const {colors} = useTheme() as CustomTheme;
+
   const handlePress = async (e: GestureResponderEvent) => {
     e.stopPropagation(); // Prevent event propagation
     await TrackPlayer.skipToPrevious();
@@ -40,6 +44,7 @@ export const PreviousButton = ({size = iconSizes.xl}) => {
 export const PlayPauseButton = ({size = iconSizes.xl}) => {
   const playerState = usePlaybackState();
   const isPlaying = playerState.state === State.Playing;
+  const {colors} = useTheme() as CustomTheme;
 
   const handlePlayPause = async (e: GestureResponderEvent) => {
     e.stopPropagation(); // Prevent event propagation
@@ -69,6 +74,8 @@ export const PlayPauseButton = ({size = iconSizes.xl}) => {
 };
 
 export const NextButton = ({size = iconSizes.xl}) => {
+  const {colors} = useTheme() as CustomTheme;
+
   const handlePress = async (e: GestureResponderEvent) => {
     e.stopPropagation(); // Prevent event propagation
     await TrackPlayer.skipToNext();

@@ -12,7 +12,7 @@ import Animated, {
 interface MovingTextProps {
   text: string;
   animationThreshold: number;
-  style?: TextStyle | ViewStyle; // Accepts both TextStyle and ViewStyle
+  style?: TextStyle | ViewStyle | TextStyle[] | ViewStyle[]; // Accepts both TextStyle and ViewStyle
 }
 
 const MovingText: React.FC<MovingTextProps> = ({
