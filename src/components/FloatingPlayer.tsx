@@ -93,7 +93,9 @@ const FloatingPlayer = () => {
             animationThreshold={15}
           />
           {/* Artist Name */}
-          <Text style={[styles.artist, {color: colors.textSecondary}]}>
+          <Text
+            style={[styles.artist, {color: colors.textSecondary}]}
+            numberOfLines={1}>
             {currentTrack.artist}
           </Text>
         </View>

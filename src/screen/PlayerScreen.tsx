@@ -36,19 +36,16 @@ const PlayerScreen = () => {
   };
 
   const handleFavorite = () => {
-    if (!curSong) return;
+    if (!curSong) {
+      return null;
+    }
     toggleFavorite(curSong.id);
   };
 
   if (!curSong) {
     return (
       <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: colors.background,
-        }}
+        style={[styles.centeredView, {backgroundColor: colors.background}]}
       />
     );
   }
@@ -56,23 +53,14 @@ const PlayerScreen = () => {
   return (
     <View style={[styles.container, {backgroundColor: colors.background}]}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign
             name="arrowleft"
             size={iconSizes.md}
             color={colors.iconPrimary}
           />
         </TouchableOpacity>
-        <Text
-          style={[
-            styles.headerText,
-            {
-              color: colors.textPrimary,
-            },
-          ]}>
+        <Text style={[styles.headerText, {color: colors.textPrimary}]}>
           Now Playing
         </Text>
       </View>
@@ -96,7 +84,6 @@ const PlayerScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Player Control */}
       <View style={styles.playerControlContainer}>
         <TouchableOpacity onPress={handleVolume}>
           <Feather
@@ -111,7 +98,6 @@ const PlayerScreen = () => {
         </View>
       </View>
 
-      {/* Progress Bar */}
       <PlayerProggressBar />
 
       <View style={styles.pad}>
@@ -127,6 +113,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: spacing.lg,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerContainer: {
     flexDirection: 'row',

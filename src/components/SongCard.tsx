@@ -4,7 +4,6 @@ import {
   ImageStyle,
   StyleSheet,
   Text,
-  TextStyle,
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
@@ -23,7 +22,7 @@ export interface SongProps {
 }
 
 interface SongCardProps {
-  containerStyle?: TextStyle | ViewStyle;
+  containerStyle?: ViewStyle; // Changed from TextStyle to ViewStyle for container
   imageStyle?: ImageStyle;
   item?: SongProps;
   handlePlay: (item: SongProps) => void;
@@ -55,10 +54,13 @@ const SongCard: React.FC<SongCardProps> = ({
       />
       <Text
         style={[styles.title, {color: colors.textPrimary}]}
-        numberOfLines={1}>
+        numberOfLines={2} // Ensures the title is clamped to one line
+      >
         {item.title}
       </Text>
-      <Text style={[styles.artist, {color: colors.textSecondary}]}>
+      <Text
+        numberOfLines={1}
+        style={[styles.artist, {color: colors.textSecondary}]}>
         {item.artist}
       </Text>
     </TouchableOpacity>
@@ -70,11 +72,13 @@ export default SongCard;
 const styles = StyleSheet.create({
   container: {
     paddingBottom: spacing.md,
+    overflow: 'hidden', // Ensures content does not overflow
   },
   coverImage: {
     width: 220,
     height: 220,
     borderRadius: 10,
+    overflow: 'hidden',
   },
   title: {
     fontWeight: 'bold',
@@ -82,8 +86,10 @@ const styles = StyleSheet.create({
     fontFamily: fontFamilies.medium,
     fontSize: fonts.lg,
     paddingVertical: spacing.sm,
+    maxWidth: 220,
   },
   artist: {
+    maxWidth: 220,
     textAlign: 'center',
     fontFamily: fontFamilies.regular,
     fontSize: fonts.md,

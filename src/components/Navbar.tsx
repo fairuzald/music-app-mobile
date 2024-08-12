@@ -12,6 +12,7 @@ import {fontFamilies} from '../constants/fonts';
 import type {CustomTheme} from '../types/themes';
 import {useTheme} from '@react-navigation/native';
 import useThemeStore from '../store/themeStore';
+import Feather from 'react-native-vector-icons/Feather';
 
 const Icon = ({
   name,
@@ -57,6 +58,10 @@ const FavoriteIcon = () => (
   <Icon name="hearto" type={AntDesign} size={iconSizes.md} />
 );
 
+const AllSongsIcon = () => (
+  <Icon name="music" type={Feather} size={iconSizes.md} />
+);
+
 // Main Navbar component
 const Navbar: React.FC<DrawerContentComponentProps> = props => {
   const {colors} = useTheme() as CustomTheme;
@@ -88,6 +93,13 @@ const Navbar: React.FC<DrawerContentComponentProps> = props => {
           onPress={() => props.navigation.navigate('Favorite')}
           labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
           icon={FavoriteIcon}
+        />
+        {/* Allsongs */}
+        <DrawerItem
+          label="All Songs"
+          onPress={() => props.navigation.navigate('AllSongs')}
+          labelStyle={[styles.textDrawer, {color: colors.textPrimary}]}
+          icon={AllSongsIcon}
         />
       </View>
     </DrawerContentScrollView>

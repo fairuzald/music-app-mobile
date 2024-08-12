@@ -6,7 +6,6 @@ import {fonts, iconSizes, spacing} from '../constants/dimensions';
 import {fontFamilies} from '../constants/fonts';
 import SongCard, {SongProps} from '../components/SongCard';
 import {useNavigation, useTheme} from '@react-navigation/native';
-import useFavoriteStore from '../store/favoritedStore';
 import {allSongs} from '../data/songs';
 import TrackPlayer from 'react-native-track-player';
 import FloatingPlayer from '../components/FloatingPlayer';
@@ -18,26 +17,22 @@ const Header = () => {
   const {colors} = useTheme() as CustomTheme;
   return (
     <Text style={[styles.headingText, {color: colors.textPrimary}]}>
-      Favorited Songs
+      All Songs
     </Text>
   );
 };
 
-const FavoriteScreen = () => {
+const AllSongScreen = () => {
   const {colors} = useTheme() as CustomTheme;
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const {favorited} = useFavoriteStore();
-  const favoriteSongs = favorited
-    .map(id => allSongs.find(song => song.id === id))
-    .filter(Boolean);
 
   const handlePlayTrack = async (selectedTrack: SongProps) => {
-    if (!favoriteSongs.length || !favoriteSongs) {
+    if (!allSongs.length || !allSongs) {
       return;
     }
 
-    const trackIndex = favoriteSongs.findIndex(
+    const trackIndex = allSongs.findIndex(
       track => track?.id === selectedTrack.id,
     );
     if (trackIndex === -1) {
@@ -45,7 +40,7 @@ const FavoriteScreen = () => {
     }
 
     // Filter out undefined values
-    const queue = favoriteSongs.filter(track => track !== undefined);
+    const queue = allSongs.filter(track => track !== undefined);
 
     await TrackPlayer.reset();
     if (queue.length > 0) {
@@ -59,7 +54,7 @@ const FavoriteScreen = () => {
   const renderEmptyState = () => (
     <View style={styles.emptyStateContainer}>
       <Text style={[styles.headingText, {color: colors.textPrimary}]}>
-        Favorited Songs
+        All Songs
       </Text>
       <Text style={[styles.emptyText, {color: colors.textPrimary}]}>
         No favorite songs yet
@@ -86,11 +81,11 @@ const FavoriteScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {favoriteSongs.length === 0 ? (
+      {allSongs.length === 0 ? (
         renderEmptyState()
       ) : (
         <FlatList
-          data={favoriteSongs}
+          data={allSongs}
           ListHeaderComponent={Header}
           renderItem={({item}) => (
             <SongCard
@@ -110,7 +105,7 @@ const FavoriteScreen = () => {
   );
 };
 
-export default FavoriteScreen;
+export default AllSongScreen;
 
 const styles = StyleSheet.create({
   container: {
