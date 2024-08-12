@@ -78,3 +78,10 @@ yarn-error.log
 .env.local
 .env.development.local
 .env.test.local
+
+**.jks
+# Ignore build.gradle in specific directories
+android/app/build.gradle
+
+# Optionally, ignore all build.gradle files (if you want to ignore them everywhere)
+# build.gradle
