@@ -12,22 +12,38 @@ import {colors} from '../constants/color';
 import {fontFamilies} from '../constants/fonts';
 import {fonts, spacing} from '../constants/dimensions';
 
-const imageUrl =
-  'https://ncsmusic.s3.eu-west-1.amazonaws.com/tracks/000/001/736/325x325/faster-1723161655-zwzjLFKZKK.jpg';
-
+export interface SongProps {
+  id: string;
+  url: string;
+  artist: string;
+  title: string;
+  artwork: string;
+}
 interface SongCardProps {
   containerStyle?: TextStyle | ViewStyle; // Accepts both TextStyle and ViewStyle
   imageStyle?: ImageStyle; // Accepts both TextStyle and ViewStyle
+  item: SongProps;
+  handlePlay: (item: SongProps) => void;
 }
 
-const SongCard = ({containerStyle, imageStyle}: SongCardProps) => {
+const SongCard = ({
+  item,
+  containerStyle,
+  imageStyle,
+  handlePlay,
+}: SongCardProps) => {
   return (
-    <TouchableOpacity style={[styles.container, containerStyle]}>
-      <Image source={{uri: imageUrl}} style={[styles.coverImage, imageStyle]} />
+    <TouchableOpacity
+      style={[styles.container, containerStyle]}
+      onPress={() => handlePlay(item)}>
+      <Image
+        source={{uri: item.artwork}}
+        style={[styles.coverImage, imageStyle]}
+      />
       <Text style={styles.title} numberOfLines={1}>
-        Track Name
+        {item.title}
       </Text>
-      <Text style={styles.artist}>Artist Name</Text>
+      <Text style={styles.artist}>{item.artist}</Text>
     </TouchableOpacity>
   );
 };

@@ -3,18 +3,53 @@ import React from 'react';
 import {colors} from '../constants/color';
 import {fonts, spacing} from '../constants/dimensions';
 import {fontFamilies} from '../constants/fonts';
-import SongCard from './SongCard';
+import SongCard, {SongProps} from './SongCard';
+import TrackPlayer from 'react-native-track-player';
 
 const ItemSeparator = () => <View style={{marginHorizontal: spacing.sm}} />;
 
-const SongCardCategory = () => {
+interface SongCardCategoryProps {
+  item: {
+    category: string;
+    songs: Array<SongProps>;
+  };
+}
+
+const SongCardCategory = ({item}: SongCardCategoryProps) => {
+  const handlePlayTrac = async (selectedTrack: SongProps) => {
+    // make a queue
+    const trackIndex = item.songs.findIndex(
+      track => track.id === selectedTrack.id,
+    );
+
+    if (trackIndex === -1) {
+      return;
+    }
+
+    const beforeTrack = item.songs.slice(0, trackIndex);
+
+    const afterTrack = item.songs.slice(trackIndex + 1);
+
+    const queue = [...beforeTrack, selectedTrack, ...afterTrack];
+
+    await TrackPlayer.reset();
+    await TrackPlayer.add(queue);
+    await TrackPlayer.play();
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.headingText}>Recommended for you</Text>
+      <Text style={styles.headingText}>{item.category}</Text>
       <FlatList
-        data={[1, 2, 3, 4, 5]}
+        data={item.songs}
         horizontal
-        renderItem={() => <SongCard />}
+        renderItem={({item}) => (
+          <SongCard
+            item={item}
+            handlePlay={(selectedTrack: SongProps) => {
+              handlePlayTrac(selectedTrack);
+            }}
+          />
+        )}
         contentContainerStyle={{
           paddingHorizontal: spacing.lg,
         }}

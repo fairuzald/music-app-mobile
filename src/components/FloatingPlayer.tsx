@@ -1,15 +1,15 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect} from 'react';
 import {colors} from '../constants/color';
 import {fontFamilies} from '../constants/fonts';
 import {fonts, spacing} from '../constants/dimensions';
 import PlayerControl from './PlayerControl';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSharedValue} from 'react-native-reanimated';
 import {Slider} from 'react-native-awesome-slider';
 import MovingText from './MovingText';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import TrackPlayer, {useProgress} from 'react-native-track-player';
 
 type RootStackParamList = {
   Home: undefined;
@@ -23,18 +23,26 @@ const imageUrl =
 const FloatingPlayer = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const progress = useSharedValue(50);
+  const progresss = useSharedValue(0);
   const min = useSharedValue(0);
-  const max = useSharedValue(100);
+  const max = useSharedValue(1);
+  const isSliding = useSharedValue(false);
+  const {position, duration} = useProgress();
+
+  useEffect(() => {
+    if (duration > 0) {
+      progresss.value = position / duration;
+    }
+  }, [position, duration, progresss]);
   const handleOpenPlayer = () => {
-    navigation.navigate('Player'); // No TypeScript error now
+    navigation.navigate('Player');
   };
 
   return (
     <View>
       <View style={{zIndex: 1}}>
         <Slider
-          progress={progress}
+          progress={progresss}
           minimumValue={min}
           maximumValue={max}
           style={styles.container}
@@ -46,6 +54,18 @@ const FloatingPlayer = () => {
           containerStyle={{
             height: 8,
           }}
+          onSlidingStart={() => {
+            isSliding.value = true;
+          }}
+          onValueChange={async value => {
+            await TrackPlayer.seekTo(value * duration);
+          }}
+          onSlidingComplete={async value => {
+            if (isSliding.value) {
+              isSliding.value = false;
+              await TrackPlayer.seekTo(value * duration);
+            }
+          }}
         />
       </View>
       <TouchableOpacity
@@ -55,7 +75,7 @@ const FloatingPlayer = () => {
         <Image source={{uri: imageUrl}} style={styles.coverImage} />
         <View style={styles.titleContainer}>
           <MovingText
-            text="Track Namd;la skdl;asdkla da;ldke"
+            text="Track Name"
             style={styles.title}
             animationThreshold={15}
           />

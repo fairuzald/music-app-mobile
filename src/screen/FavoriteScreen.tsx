@@ -7,12 +7,14 @@ import {fonts, iconSizes, spacing} from '../constants/dimensions';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {fontFamilies} from '../constants/fonts';
 import SongCard from '../components/SongCard';
+import {useNavigation} from '@react-navigation/native';
 
 const FavoriteScreen = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign
             name="arrowleft"
             size={iconSizes.md}
