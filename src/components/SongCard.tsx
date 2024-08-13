@@ -19,6 +19,8 @@ export interface SongProps {
   artist: string;
   title: string;
   artwork: string;
+  dateText: string;
+  daysAgo: number;
 }
 
 interface SongCardProps {

@@ -12,6 +12,7 @@ import TrackPlayer, {useActiveTrack} from 'react-native-track-player';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import useFavoriteStore from '../store/favoritedStore';
 import type {CustomTheme} from '../types/themes';
+import VolumeProgressBar from '../components/VolumeProggressBar';
 
 const PlayerScreen = () => {
   const curSong = useActiveTrack();
@@ -31,13 +32,18 @@ const PlayerScreen = () => {
 
   const handleVolume = async () => {
     const volume = await TrackPlayer.getVolume();
-    await TrackPlayer.setVolume(volume === 0 ? 1 : 0);
-    setIsMute(!isMute);
+    const newVolume = volume === 0 ? 1 : 0;
+    await TrackPlayer.setVolume(newVolume);
+    setIsMute(newVolume === 0);
+  };
+
+  const handleMute = (val: number) => {
+    setIsMute(val === 0);
   };
 
   const handleFavorite = () => {
     if (!curSong) {
-      return null;
+      return;
     }
     toggleFavorite(curSong.id);
   };
@@ -66,6 +72,7 @@ const PlayerScreen = () => {
       </View>
 
       <Image source={{uri: curSong?.artwork}} style={styles.coverImage} />
+
       <View style={styles.contentContainer}>
         <View style={styles.textContainer}>
           <Text style={[styles.title, {color: colors.textPrimary}]}>
@@ -103,6 +110,8 @@ const PlayerScreen = () => {
       <View style={styles.pad}>
         <PlayerControl size={iconSizes['2xl']} />
       </View>
+
+      <VolumeProgressBar onMute={handleMute} isMute={isMute} />
     </View>
   );
 };
@@ -126,7 +135,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
   },
   headerText: {
-    fontFamily: fontFamilies.medium,
+    fontFamily: fontFamilies.bold,
     fontSize: fonts.lg,
     flex: 1,
     textAlign: 'center',
@@ -169,6 +178,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pad: {
-    paddingVertical: spacing['2xl'],
+    paddingBottom: spacing.sm,
+    paddingTop: spacing.xl,
   },
 });

@@ -1,8 +1,6 @@
-import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {fonts, iconSizes, spacing} from '../constants/dimensions';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {fonts, spacing} from '../constants/dimensions';
 import {fontFamilies} from '../constants/fonts';
 import SongCard, {SongProps} from '../components/SongCard';
 import {useNavigation, useTheme} from '@react-navigation/native';
@@ -12,14 +10,16 @@ import TrackPlayer from 'react-native-track-player';
 import FloatingPlayer from '../components/FloatingPlayer';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigator';
-import type {CustomTheme} from '../types/themes';
+import {CustomTheme} from '../types/themes';
 import Header from '../components/Header';
+import Search from '../components/Search';
+import PlayControlBatch from '../components/PlayControlBatch';
 
-const HeaderText = () => {
+const HeaderText = ({text}: {text: string}) => {
   const {colors} = useTheme() as CustomTheme;
   return (
     <Text style={[styles.headingText, {color: colors.textPrimary}]}>
-      Favorited Songs
+      {text}
     </Text>
   );
 };
@@ -29,24 +29,30 @@ const FavoriteScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {favorited} = useFavoriteStore();
-  const favoriteSongs = favorited
+
+  // Filter out undefined and ensure items are of type SongProps
+  const favoriteSongs: SongProps[] = favorited
     .map(id => allSongs.find(song => song.id === id))
-    .filter(Boolean);
+    .filter((song): song is SongProps => song !== undefined);
+
+  const [filteredSongs, setFilteredSongs] =
+    useState<SongProps[]>(favoriteSongs);
+  console.log(filteredSongs);
+  const [isSearch, setIsSearch] = useState(false);
 
   const handlePlayTrack = async (selectedTrack: SongProps) => {
-    if (!favoriteSongs.length || !favoriteSongs) {
+    if (!favoriteSongs.length) {
       return;
     }
 
     const trackIndex = favoriteSongs.findIndex(
-      track => track?.id === selectedTrack.id,
+      track => track.id === selectedTrack.id,
     );
     if (trackIndex === -1) {
       return;
     }
 
-    // Filter out undefined values
-    const queue = favoriteSongs.filter(track => track !== undefined);
+    const queue = favoriteSongs; // No need to filter for undefined
 
     await TrackPlayer.reset();
     if (queue.length > 0) {
@@ -57,26 +63,41 @@ const FavoriteScreen = () => {
     navigation.navigate('Player');
   };
 
+  const handleSearch = (query: string) => {
+    if (query) {
+      const results = favoriteSongs.filter(
+        song =>
+          song.title.toLowerCase().includes(query.toLowerCase()) ||
+          song.artist.toLowerCase().includes(query.toLowerCase()),
+      );
+      setFilteredSongs(results);
+      setIsSearch(true);
+    } else {
+      setFilteredSongs(favoriteSongs);
+      setIsSearch(false);
+    }
+  };
+
   const renderEmptyState = () => (
     <View style={styles.emptyStateContainer}>
-      <Text style={[styles.headingText, {color: colors.textPrimary}]}>
-        Favorited Songs
-      </Text>
       <Text style={[styles.emptyText, {color: colors.textPrimary}]}>
-        No favorite songs yet
+        No songs found
       </Text>
     </View>
   );
-
+  console.log('filteredSongs', filteredSongs);
   return (
     <View style={styles.container}>
       <Header />
+      <HeaderText text={isSearch ? 'Search Results' : 'Favorited Songs'} />
+      <Search onSearch={handleSearch} />
+      <PlayControlBatch songs={favoriteSongs} />
 
-      {favoriteSongs.length === 0 ? (
+      {filteredSongs.length === 0 ? (
         renderEmptyState()
       ) : (
         <FlatList
-          data={favoriteSongs}
+          data={filteredSongs}
           ListHeaderComponent={HeaderText}
           renderItem={({item}) => (
             <SongCard
@@ -96,18 +117,10 @@ const FavoriteScreen = () => {
   );
 };
 
-export default FavoriteScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: spacing.tr,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
   },
   headingText: {
     fontSize: fonts.xl,
@@ -131,10 +144,11 @@ const styles = StyleSheet.create({
     height: 160,
   },
   flatListContentContainer: {
-    paddingBottom: 200,
+    paddingBottom: 100,
   },
   columnWrapper: {
     justifyContent: 'space-between',
-    marginVertical: spacing.lg,
   },
 });
+
+export default FavoriteScreen;
