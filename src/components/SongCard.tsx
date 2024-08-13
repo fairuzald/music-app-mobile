@@ -22,7 +22,7 @@ export interface SongProps {
 }
 
 interface SongCardProps {
-  containerStyle?: ViewStyle; // Changed from TextStyle to ViewStyle for container
+  containerStyle?: ViewStyle;
   imageStyle?: ImageStyle;
   item?: SongProps;
   handlePlay: (item: SongProps) => void;
@@ -45,8 +45,8 @@ const SongCard: React.FC<SongCardProps> = ({
     <TouchableOpacity
       style={[styles.container, containerStyle]} // Merging custom container styles
       onPress={() => {
-        handlePlay(item); // Play the selected song
-        navigation.navigate('Player'); // Navigate to the Player screen
+        handlePlay(item);
+        navigation.navigate('Player');
       }}>
       <Image
         source={{uri: item.artwork}}
@@ -54,8 +54,7 @@ const SongCard: React.FC<SongCardProps> = ({
       />
       <Text
         style={[styles.title, {color: colors.textPrimary}]}
-        numberOfLines={2} // Ensures the title is clamped to one line
-      >
+        numberOfLines={1}>
         {item.title}
       </Text>
       <Text
@@ -72,24 +71,27 @@ export default SongCard;
 const styles = StyleSheet.create({
   container: {
     paddingBottom: spacing.md,
-    overflow: 'hidden', // Ensures content does not overflow
+    overflow: 'hidden',
+    flexDirection: 'column',
+    gap: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   coverImage: {
-    width: 220,
-    height: 220,
+    width: 200,
+    height: 200,
     borderRadius: 10,
+    flexShrink: 0,
     overflow: 'hidden',
   },
   title: {
-    fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: fontFamilies.medium,
+    fontFamily: fontFamilies.bold,
     fontSize: fonts.lg,
-    paddingVertical: spacing.sm,
     maxWidth: 220,
   },
   artist: {
-    maxWidth: 220,
+    maxWidth: 200,
     textAlign: 'center',
     fontFamily: fontFamilies.regular,
     fontSize: fonts.md,

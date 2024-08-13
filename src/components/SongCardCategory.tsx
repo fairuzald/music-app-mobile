@@ -1,11 +1,12 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {fonts, spacing} from '../constants/dimensions';
 import {fontFamilies} from '../constants/fonts';
 import SongCard, {SongProps} from './SongCard';
 import TrackPlayer from 'react-native-track-player';
 import type {CustomTheme} from '../types/themes';
+import {NavigationProp} from '../types/navigator';
 
 // Separator component for FlatList
 const ItemSeparator = () => <View style={styles.itemSeparator} />;
@@ -22,6 +23,7 @@ interface SongCardCategoryProps {
 // Component to render a category of songs with a list of SongCard components
 const SongCardCategory: React.FC<SongCardCategoryProps> = ({item: song}) => {
   const {colors} = useTheme() as CustomTheme;
+  const navigation = useNavigation<NavigationProp>();
 
   // Function to handle track playing
   const handlePlayTrack = async (selectedTrack: SongProps) => {
@@ -47,9 +49,27 @@ const SongCardCategory: React.FC<SongCardCategoryProps> = ({item: song}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.headingText, {color: colors.textPrimary}]}>
-        {song.category}
-      </Text>
+      <View style={styles.albumContainer}>
+        <Text style={[styles.headingText, {color: colors.textPrimary}]}>
+          {song.category}
+        </Text>
+
+        {song.category === 'Your Songs' ? (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('AllSongs');
+            }}>
+            <Text
+              style={{
+                color: colors.textPrimary,
+                fontSize: fonts.lg,
+                fontFamily: fontFamilies.bold,
+              }}>
+              See all
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
       <FlatList
         data={song.songs}
         horizontal
@@ -69,16 +89,22 @@ export default SongCardCategory;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    gap: spacing.md,
   },
   headingText: {
     fontSize: fonts.xl,
     fontFamily: fontFamilies.bold,
-    paddingVertical: spacing.lg,
   },
   itemSeparator: {
     marginHorizontal: spacing.sm,
   },
   flatListContainer: {
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.sm,
+  },
+  albumContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
   },
 });

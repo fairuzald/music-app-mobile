@@ -7,6 +7,7 @@ export type FavoriteStore = {
   removeFavorite: (id: string) => void;
   toggleFavorite: (id: string) => void;
   loadFavorited: () => void;
+  isFavorited: (id: string) => boolean;
 };
 
 const useFavoriteStore = create<FavoriteStore>((set, get) => ({
@@ -40,6 +41,7 @@ const useFavoriteStore = create<FavoriteStore>((set, get) => ({
       console.error(e);
     }
   },
+  isFavorited: id => get().favorited.includes(id),
 }));
 
 export default useFavoriteStore;

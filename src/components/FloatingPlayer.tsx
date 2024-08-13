@@ -47,7 +47,7 @@ const FloatingPlayer = () => {
   }
 
   return (
-    <View>
+    <View style={styles.superContainer}>
       {/* Slider of current song */}
       <View style={styles.sliderContainer}>
         <Slider
@@ -78,7 +78,12 @@ const FloatingPlayer = () => {
 
       {/* Control and information */}
       <TouchableOpacity
-        style={styles.container}
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.backgroundSecondary,
+          },
+        ]}
         activeOpacity={0.85}
         onPress={handleOpenPlayer}>
         {/* Album image */}
@@ -109,8 +114,8 @@ export default FloatingPlayer;
 
 const styles = StyleSheet.create({
   coverImage: {
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     borderRadius: 10,
     resizeMode: 'cover',
   },
@@ -139,5 +144,12 @@ const styles = StyleSheet.create({
   },
   sliderStyle: {
     height: 8,
+  },
+  superContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 10,
   },
 });

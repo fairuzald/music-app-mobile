@@ -11,5 +11,6 @@ export const lightTheme = {
     iconSecondary: '#8996B8',
     minimumTinkColor: '#091227',
     maximumTrackColor: '#D3D7DF',
+    backgroundSecondary: '#e9ecf0',
   },
 };

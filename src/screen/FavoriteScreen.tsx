@@ -13,8 +13,9 @@ import FloatingPlayer from '../components/FloatingPlayer';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigator';
 import type {CustomTheme} from '../types/themes';
+import Header from '../components/Header';
 
-const Header = () => {
+const HeaderText = () => {
   const {colors} = useTheme() as CustomTheme;
   return (
     <Text style={[styles.headingText, {color: colors.textPrimary}]}>
@@ -69,29 +70,14 @@ const FavoriteScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign
-            name="arrowleft"
-            size={iconSizes.md}
-            color={colors.iconPrimary}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <SimpleLineIcons
-            name="equalizer"
-            size={iconSizes.md}
-            color={colors.iconPrimary}
-          />
-        </TouchableOpacity>
-      </View>
+      <Header />
 
       {favoriteSongs.length === 0 ? (
         renderEmptyState()
       ) : (
         <FlatList
           data={favoriteSongs}
-          ListHeaderComponent={Header}
+          ListHeaderComponent={HeaderText}
           renderItem={({item}) => (
             <SongCard
               item={item}
@@ -115,6 +101,7 @@ export default FavoriteScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: spacing.tr,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -145,7 +132,6 @@ const styles = StyleSheet.create({
   },
   flatListContentContainer: {
     paddingBottom: 200,
-    paddingHorizontal: spacing.lg,
   },
   columnWrapper: {
     justifyContent: 'space-between',

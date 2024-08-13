@@ -11,5 +11,6 @@ export const darkTheme = {
     iconSecondary: '#8996B8',
     minimumTinkColor: '#FFFFFF',
     maximumTrackColor: '#555B6A',
+    backgroundSecondary: '#1d3854',
   },
 };

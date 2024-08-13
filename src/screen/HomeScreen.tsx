@@ -7,6 +7,7 @@ import SongCardCategory, {
 import FloatingPlayer from '../components/FloatingPlayer';
 import {songs} from '../data/songs';
 import {useTheme} from '@react-navigation/native';
+import {spacing} from '../constants/dimensions';
 
 const HomeScreen: React.FC = () => {
   const {colors} = useTheme();
@@ -33,5 +34,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: spacing.tr,
   },
 });

@@ -17,8 +17,8 @@ const songs = [
     songs: newestSongs,
   },
   {
-    category: 'All Songs',
-    songs: allSongs,
+    category: 'Your Songs',
+    songs: allSongs.slice(0, 20),
   },
 ];
 

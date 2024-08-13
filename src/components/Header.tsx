@@ -1,16 +1,32 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {iconSizes, spacing} from '../constants/dimensions';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import type {CustomTheme} from '../types/themes';
 import {DrawerNavigationProps} from '../types/navigator';
+import Octicons from 'react-native-vector-icons/Octicons';
+import useThemeStore from '../store/themeStore';
+
+const ToggleDarkModeIcon = ({
+  isDarkMode,
+  color,
+}: {
+  isDarkMode: boolean;
+  color: string;
+}) => (
+  <Octicons
+    name={isDarkMode ? 'moon' : 'sun'}
+    size={iconSizes.md}
+    color={color}
+  />
+);
 
 const Header = () => {
   // Accessing the current theme colors and navigation functions
   const {colors} = useTheme() as CustomTheme;
   const navigation = useNavigation<DrawerNavigationProps>();
+  const {isDarkMode, toggleDarkMode} = useThemeStore();
 
   // Function to toggle the drawer menu
   const toggleDrawer = () => {
@@ -29,11 +45,10 @@ const Header = () => {
       </TouchableOpacity>
 
       {/* Search button */}
-      <TouchableOpacity>
-        <AntDesign
-          name="search1"
+      <TouchableOpacity onPress={toggleDarkMode}>
+        <ToggleDarkModeIcon
           color={colors.iconPrimary}
-          size={iconSizes.md}
+          isDarkMode={isDarkMode}
         />
       </TouchableOpacity>
     </View>
@@ -46,7 +61,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    alignItems: 'center',
   },
 });

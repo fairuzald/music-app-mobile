@@ -7,11 +7,9 @@ import {
 } from '@react-navigation/drawer';
 import {fonts, iconSizes, spacing} from '../constants/dimensions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Octicons from 'react-native-vector-icons/Octicons';
 import {fontFamilies} from '../constants/fonts';
 import type {CustomTheme} from '../types/themes';
 import {useTheme} from '@react-navigation/native';
-import useThemeStore from '../store/themeStore';
 import Feather from 'react-native-vector-icons/Feather';
 
 const Icon = ({
@@ -41,15 +39,6 @@ const CloseIcon = () => (
   <Icon name="close" type={AntDesign} size={iconSizes.lg} isPrimary />
 );
 
-const ToggleDarkModeIcon = ({isDarkMode}: {isDarkMode: boolean}) => (
-  <Icon
-    name={isDarkMode ? 'moon' : 'sun'}
-    type={Octicons}
-    size={iconSizes.lg}
-    isPrimary
-  />
-);
-
 const HomeIcon = () => (
   <Icon name="home" type={AntDesign} size={iconSizes.md} />
 );
@@ -65,7 +54,6 @@ const AllSongsIcon = () => (
 // Main Navbar component
 const Navbar: React.FC<DrawerContentComponentProps> = props => {
   const {colors} = useTheme() as CustomTheme;
-  const {isDarkMode, toggleDarkMode} = useThemeStore();
 
   return (
     <DrawerContentScrollView
@@ -74,9 +62,6 @@ const Navbar: React.FC<DrawerContentComponentProps> = props => {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.closeDrawer()}>
           <CloseIcon />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={toggleDarkMode}>
-          <ToggleDarkModeIcon isDarkMode={isDarkMode} />
         </TouchableOpacity>
       </View>
 

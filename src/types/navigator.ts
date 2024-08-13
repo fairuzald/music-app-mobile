@@ -5,6 +5,7 @@ type RootStackParamList = {
   Home: undefined;
   Favorite: undefined;
   Player: undefined;
+  AllSongs: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;

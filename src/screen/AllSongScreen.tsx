@@ -1,10 +1,8 @@
-import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {fonts, iconSizes, spacing} from '../constants/dimensions';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {fonts, spacing} from '../constants/dimensions';
 import {fontFamilies} from '../constants/fonts';
-import SongCard, {SongProps} from '../components/SongCard';
+import {SongProps} from '../components/SongCard';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {allSongs} from '../data/songs';
 import TrackPlayer from 'react-native-track-player';
@@ -12,12 +10,17 @@ import FloatingPlayer from '../components/FloatingPlayer';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigator';
 import type {CustomTheme} from '../types/themes';
+import SongCardRow from '../components/SongCardRow';
+import Header from '../components/Header';
+import Search from '../components/Search';
 
-const Header = () => {
+import PlayControlBatch from '../components/PlayControlBatch';
+
+const HeaderText = ({text}: {text: string}) => {
   const {colors} = useTheme() as CustomTheme;
   return (
     <Text style={[styles.headingText, {color: colors.textPrimary}]}>
-      All Songs
+      {text}
     </Text>
   );
 };
@@ -26,6 +29,9 @@ const AllSongScreen = () => {
   const {colors} = useTheme() as CustomTheme;
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const [filteredSongs, setFilteredSongs] = useState<SongProps[]>(allSongs);
+  const [isSearch, setIsSearch] = useState(false);
 
   const handlePlayTrack = async (selectedTrack: SongProps) => {
     if (!allSongs.length || !allSongs) {
@@ -51,44 +57,45 @@ const AllSongScreen = () => {
     navigation.navigate('Player');
   };
 
+  const handleSearch = (query: string) => {
+    if (query) {
+      const results = allSongs.filter(
+        song =>
+          song.title.toLowerCase().includes(query.toLowerCase()) ||
+          song.artist.toLowerCase().includes(query.toLowerCase()),
+      );
+      setFilteredSongs(results);
+      setIsSearch(true);
+    } else {
+      setFilteredSongs(allSongs);
+      setIsSearch(false);
+    }
+  };
+
   const renderEmptyState = () => (
     <View style={styles.emptyStateContainer}>
       <Text style={[styles.headingText, {color: colors.textPrimary}]}>
         All Songs
       </Text>
       <Text style={[styles.emptyText, {color: colors.textPrimary}]}>
-        No favorite songs yet
+        No result found
       </Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign
-            name="arrowleft"
-            size={iconSizes.md}
-            color={colors.iconPrimary}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <SimpleLineIcons
-            name="equalizer"
-            size={iconSizes.md}
-            color={colors.iconPrimary}
-          />
-        </TouchableOpacity>
-      </View>
-
-      {allSongs.length === 0 ? (
+      <Header />
+      <HeaderText text={isSearch ? 'Search Results' : 'All Songs'} />
+      <Search onSearch={handleSearch} />
+      <PlayControlBatch songs={allSongs} />
+      {filteredSongs.length === 0 ? (
         renderEmptyState()
       ) : (
         <FlatList
-          data={allSongs}
-          ListHeaderComponent={Header}
+          data={filteredSongs}
           renderItem={({item}) => (
-            <SongCard
+            <SongCardRow
               item={item}
               handlePlay={handlePlayTrack}
               containerStyle={styles.songCardContainer}
@@ -96,8 +103,6 @@ const AllSongScreen = () => {
             />
           )}
           contentContainerStyle={styles.flatListContentContainer}
-          numColumns={2}
-          columnWrapperStyle={styles.columnWrapper}
         />
       )}
       <FloatingPlayer />
@@ -105,11 +110,11 @@ const AllSongScreen = () => {
   );
 };
 
-export default AllSongScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: spacing.tr,
+    gap: spacing.xs,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   headingText: {
-    fontSize: fonts.xl,
+    fontSize: fonts['2xl'],
     fontFamily: fontFamilies.bold,
   },
   emptyStateContainer: {
@@ -132,18 +137,21 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   songCardContainer: {
-    width: '47%',
+    width: '100%',
+    marginBottom: spacing.lg,
   },
   songCardImage: {
-    width: 160,
+    width: '100%',
     height: 160,
   },
   flatListContentContainer: {
     paddingBottom: 200,
-    paddingHorizontal: spacing.lg,
   },
-  columnWrapper: {
-    justifyContent: 'space-between',
-    marginVertical: spacing.lg,
+  playAllText: {
+    fontFamily: fontFamilies.bold,
+    fontSize: fonts.md,
+    textAlign: 'center',
   },
 });
+
+export default AllSongScreen;
